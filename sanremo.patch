@@ -1,0 +1,70 @@
+--- Documentation/Configure.help	Sat Jun 24 13:52:00 2000
++++ Documentation/Configure.help	Wed Nov  8 08:25:45 2023
+@@ -6523,6 +6523,20 @@ CONFIG_SKMC
+   both cards is done automatically.  Note that using multiple boards
+   of different type hasn't been tested with this driver.
+ 
++IBM MCA 10/100 Ethernet (9-K)
++CONFIG_SANREMO
++  This is a Micro Channel ethernet adapter.  You need to set CONFIG_MCA
++  to use this driver.  It's both available as an in-kernel driver and
++  as a module ( = code which can be inserted in and removed from the
++  running kernel whenever you want). If you want to compile it as a module,
++  say M here and read Documentation/modules.txt as well as
++  Documentation/networking/net-modules.txt. If you plan to use more than
++  one network card under linux, read the Multiple-Ethernet-mini-HOWTO,
++  available from sunsite.unc.edu:/pub/Linux/docs/HOWTO/mini.  The only
++  currently supported card is the IB MCA 10/00 Ethernet (9-K) adapter,
++  code name "San Remo". Note that using multiple boards
++  of this type hasn't been tested with this driver.
++
+ EISA, VLB, PCI and on board controllers
+ CONFIG_NET_EISA
+   This is another class of network cards which attach directly to the
+--- drivers/net/Config.in	Sat Jun 24 10:25:36 2000
++++ drivers/net/Config.in	Wed Nov  8 08:22:05 2023
+@@ -121,6 +121,7 @@ if [ "$CONFIG_NET_ETHERNET" = "y" ]; the
+   if [ "$CONFIG_MCA" = "y" ]; then
+     tristate 'NE/2 (ne2000 MCA version) support' CONFIG_NE2_MCA
+     tristate 'SKnet MCA support' CONFIG_SKMC
++    tristate 'IBM MCA 10/100 Mbps Ethernet (9-K)' CONFIG_SANREMO
+   fi
+   bool 'EISA, VLB, PCI and on board controllers' CONFIG_NET_EISA
+   if [ "$CONFIG_NET_EISA" = "y" ]; then
+--- drivers/net/Makefile	Sat Jun 24 10:25:36 2000
++++ drivers/net/Makefile	Wed Nov  8 09:38:02 2023
+@@ -410,6 +410,14 @@ else
+   endif
+ endif
+ 
++ifeq ($(CONFIG_SANREMO),y)
++L_OBJS += sanremo.o
++else
++  ifeq ($(CONFIG_SANREMO),m)
++  M_OBJS += sanremo.o
++  endif
++endif
++
+ ifeq ($(CONFIG_DEFXX),y)
+ L_OBJS += defxx.o
+ endif
+--- drivers/net/Space.c	Sat Jun 24 10:25:36 2000
++++ drivers/net/Space.c	Wed Nov  8 09:34:06 2023
+@@ -58,6 +58,7 @@ extern int eepro100_probe(struct device 
+ extern int el3_probe(struct device *);
+ extern int at1500_probe(struct device *);
+ extern int pcnet32_probe(struct device *);
++extern int sanremo_probe(struct device *);
+ extern int at1700_probe(struct device *);
+ extern int fmv18x_probe(struct device *);
+ extern int eth16i_probe(struct device *);
+@@ -309,6 +310,9 @@ struct devprobe mca_probes[] __initdata 
+ #endif
+ #ifdef CONFIG_SKMC              /* SKnet Microchannel */
+         {skmca_probe, 0},
++#endif
++#ifdef CONFIG_SANREMO
++	{sanremo_probe, 0},
+ #endif
+ 	{NULL, 0},
+ };
