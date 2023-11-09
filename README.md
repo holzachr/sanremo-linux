@@ -152,11 +152,11 @@ If you are running a vintage 2.2.17 Linux kernel on your favorite Micro Channel 
 you can copy the sanremo.c to /usr/src/<kernel-src>/drivers/net, copy the sanremo.patch to
 /usr/src/<kernel-src>, navigate there and
 
-`patch -p0 < sanremo.patch
+`patch -p0 < sanremo.patch`
 
 Then 
 
-`make menuconfig
+`make menuconfig`
 
 and select the new driver from the network section.
 MCA bus support must be enabled.
@@ -174,3 +174,9 @@ With an AMD K6-III 400 CPU, the card achieved over 7.500 kb/sec.
 
 The driver still seems to hit CPU saturation, but the results are still impressive for an MCA system.
 This may change with future revisions of the driver.	
+
+## Credits
+
+Thanks to Ryan Alswede for having the vision of reverse enginnering the card for so long, 
+poking me at it over and over again, creating the ADF, asking all the right questions and
+all the day long rubber ducking.
