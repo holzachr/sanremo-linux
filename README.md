@@ -8,6 +8,9 @@ The difference between a regular PCnet-FAST card and the San Remo is the onboard
 which is the only component that can be directly addressed from within the driver,
 and that needs to be passed in order to configure the PCnet chip.
 
+Since the PCnet is a PCI busmastering chipset, the ASIC is needed in order to transform
+bus accesses through the card's MCA interface to the PCnet. It acts as a MCA-to-PCI bridge.
+
 ## The card's ressources
 
 Through Reference Disk configuration and the ADF, you can choose from the following ressources:
