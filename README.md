@@ -10,8 +10,7 @@ and that needs to be passed in order to configure the PCnet chip.
 
 ## The card's ressources
 
-Depending on the configuration through the ADF and the Reference Disk, 
-you can choose among the following ressources:
+Through Reference Disk configuration and the ADF, you can choose from the following ressources:
 
 I/O 0x1C00..1FFF / 0x2000..23FF / 0x2400..27FF / 0x2800..2BFF
 
