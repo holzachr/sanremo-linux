@@ -146,4 +146,31 @@ It may not prove important in PS/2 systems, but accessing that storage space wor
 3) You could try writing to it, if you dare.
 4) The VPD state/valid register at iobase + 0x26 probably holds a "valid" flag for the checksum.
 
-	
+## Driver compilation
+
+If you are running a vintage 2.2.17 Linux kernel on your favorite Micro Channel machine,
+you can copy the sanremo.c to /usr/src/<kernel-src>/drivers/net, copy the sanremo.patch to
+/usr/src/<kernel-src>, navigate there and
+
+`patch -p0 < sanremo.patch
+
+Then 
+
+`make menuconfig
+
+and select the new driver from the network section.
+MCA bus support must be enabled.
+
+Then rebuild and install your custom kernel like you always do.
+
+## Performance measurement
+
+I used netio v1.11 to benchmark the adapter against a random Core2Duo system running Ubuntu 22.04.
+Adapter in full-duplex, 100 mbit mode.
+Measurements were taken on an IBM PC 750 PCI/MCA machine with Debian "Potato" 2.2 and various CPUs.
+
+With the stock Pentium 133 CPU, the card achieved about 3.200 kb/sec.
+With an AMD K6-III 400 CPU, the card achieved over 7.500 kb/sec.
+
+The driver still seems to hit CPU saturation, but the results are still impressive for an MCA system.
+This may change with future revisions of the driver.	
