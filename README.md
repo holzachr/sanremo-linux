@@ -52,7 +52,7 @@ iobase + 0x23  1    -        -             -               <unused>
 iobase + 0x24  1    WO       VPD           0x00..0xFF      VPD index register
 iobase + 0x25  1    RO       VPD           Var             VPD data register
 iobase + 0x26  1    RO       VPD           0x01            VPD state/valid Register?
-iobase + 0x27  1    -	     -  	       -               <unused>
+iobase + 0x27  1    -	     -             -               <unused>
 iobase + 0x28  4    WO       Init          0x00000000      Written to on Init only
 iobase + 0x2C  4    -	     -             -               <unused>
 ```
@@ -106,7 +106,7 @@ So for each usually single port access to the PCnet, in our case we have to do t
 
 If you issue writing a '1' to the Daughter card PCI config space access register at iobase + 0x04,
 the PCnet's PCI Config Space is available for 32-bit wide access through the standard I/O tunnel registers
-iobase + 0x08 and iobase + 0x0C for exactly one immediatly following access.
+iobase + 0x08 and iobase + 0x0C for exactly one immediately following access.
 The PCI Config Space can be read and written this way.
 
 ## Interrupt handling
@@ -141,7 +141,7 @@ In the AIX / RS/6000 world, each adapter must provide a storage area where the s
 VPD = Vital Product Data can be stored and altered.
 This is supposed to hold information about the card, it's revisions, and optional space
 about customer information about where the card is installed into, among other things.
-This data is stored inside a 256 byte EEPROM type 93C46 next to the PCnet chip.
+This data is stored inside a 256 byte EEPROM type 24C02 next to the ASIC.
 It may not prove important in PS/2 systems, but accessing that storage space works like this:
 
 1) Write the byte index (0..255) to the VPD index register at iobase + 0x24
