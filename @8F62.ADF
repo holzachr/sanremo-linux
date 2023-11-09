@@ -1,0 +1,57 @@
+;********************************************************************
+;* Copyright (C) 2023 by Ryan Alswede  All rights reserved          *
+;* Based on data read by Christian Holzapfel from AIX POS Registers *
+;********************************************************************
+
+;Version 2.0
+
+AdapterId  08f62h
+
+AdapterName "IBM 10/100 Mbps TX MCA Ethernet Adapter"
+
+NumBytes 4
+
+FixedResources
+  POS[2]=00XXXX11b
+
+NamedItem
+  Prompt "Adapter I/O Address range"
+
+  Choice "I/O Ports 01C00-01FFF" POS[0]=0001111Xb io 01C00h-01FFFh 
+  Choice "I/O Ports 02000-023FF" POS[0]=0010001Xb io 02000h-023FFh
+  choice "I/O Ports 02400-027FF" POS[0]=0010011Xb io 02400h-027FFh
+  Choice "I/O Ports 02800-02BFF" POS[0]=0010101Xb io 02800h-02BFFh												   
+             
+  Help "This option selects the I/O address to be used by the network adapter."
+
+NamedItem
+  Prompt "Adapter DMA Level"
+  Choice "DMA Level 3" POS[1]=00110000b arb 3
+  Choice "DMA Level 4" POS[1]=01000000b arb 4
+  Choice "DMA Level 5" POS[1]=01010000b arb 5
+  Choice "DMA Level 6" POS[1]=01100000b arb 6
+  Choice "DMA Level 7" POS[1]=01110000b arb 7
+
+  Help "This option selects the DMA to be used by the network adapter."
+
+NamedItem
+  Prompt "Adapter Interrupt Level"
+  
+  Choice "IRQ 10" POS[3]=11111111b int 10d
+  Choice "IRQ 11" POS[3]=11111110b int 11d
+  Choice "IRQ 12" POS[3]=11111101b int 12d
+  Choice "IRQ 15" POS[3]=11111100b int 15d  
+ 
+  Help "This option selects the IRQ to be used by the network adapter."
+
+NamedItem
+  Prompt "Adapter Enable / Disable"
+
+  Choice "Ethernet Adapter Enabled"  POS[0]=XXXXXXX1b	
+  Choice "Ethernet Adapter Disabled" POS[0]=XXXXXXX0b
+  
+  Help "This option enables or disables the network adapter."
+
+
+
+
