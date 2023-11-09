@@ -123,6 +123,15 @@ So in order to clear a pending interrupt, the driver's ISR would have to
 4) Acknowledge the ASIC's pending interrupt flags by writing the read
    values back to iobase + 0x18, iobase + 0x02 and 0x0FFF to 0x1A.
    
+## DMA transfers
+
+Usually, the PCnet is a supreme busmaster on it's PCI bus.
+The ASIC gracefully picks up busmastering requests from the PCnet, and translates them into 
+Micro Channel DMA requests using the PREEMPT#, ARB/GNT# lines, along with DMA slave arbitration.
+All DMA handling is invisible to the user or driver.
+Reserving a DMA arb level in the Reference Disk configuration is just for allocating the ressource
+for the ASIC, and avoiding conflicts with other installed cards.
+   
 ## Accessing the VPD area
 
 In the AIX / RS/6000 world, each adapter must provide a storage area where the so called 
