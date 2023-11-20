@@ -106,6 +106,7 @@ static int full_duplex[MAX_UNITS] = {0, };
 /*
  * History:
  * v1.00:  Initial version
+ * v1.01:  Strange access in sanremo_init_asic() clarified
  */
 
 
@@ -420,15 +421,17 @@ sanremo_init_asic(unsigned long ioaddr)
 	sanremo_write_pci_config(ioaddr, 0x04, 0x00000145);	    			// Write Control: SERREN, PERREN, BMEN, IOEN
 	temp = sanremo_read_pci_config(ioaddr, 0x08);	        			// Read PCI Revision ID
 		
-	/* For some reason this block is required, and I do not understand it.
-	   Without these RDP read and write accesses, the card does not show up.
-	   It's also unclear why RAP has not been set before, and where RDP actually points to.
-       That even differs if we're after a cold boot or a driver reload.
-       Maybe it's a dummy access to wake up the ASIC? */
+    /* The following 32-bit accesses will switch the PCnet from 16-bit WIO address mode to the 
+       32-bit DWIO mode. Maybe DWIO is the only one supported by the ASIC, I have never tested WIO.
+       The original AIX driver shifts gears into DWIO mode as first action between the driver and 
+       the PCnet, and in Linux we do the same. Guaranteed to work fine. 
+       From the Am79C971 datasheet:                    
+          "The Software can invoke the DWIO mode by performing a DWord write 
+           access to the I/O location at offset 10h (RDP)"                     */
     outl(ioaddr + ASIC_IO_OFFSET + PCNET32_DWIO_RDP, ioaddr + ASIC_IO_ADDRESS_REGISTER);      
     temp = inl(ioaddr + ASIC_IO_DATA_REGISTER); 
     outl(ioaddr + ASIC_IO_OFFSET + PCNET32_DWIO_RDP, ioaddr + ASIC_IO_ADDRESS_REGISTER);      
-    outl(temp, ioaddr + ASIC_IO_DATA_REGISTER);                          // .. = 0x02002C35 
+    outl(temp, ioaddr + ASIC_IO_DATA_REGISTER);
 	
 	/* Check BDP19 = EECAS = EEPROM Control and Status for bit 0x0002 = EESK set,
 	   that indicates an EEPROM has been detected */
