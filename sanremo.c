@@ -397,7 +397,7 @@ int __init sanremo_probe (struct device *dev)
 static int __init
 sanremo_init_asic(unsigned long ioaddr)	
 {
-	int eepromPresent;
+	int eepromInitDone;
 	int i, temp;
 	
 	/* This sequence of writes goes out to the San Remo ASIC
@@ -433,10 +433,10 @@ sanremo_init_asic(unsigned long ioaddr)
     outl(ioaddr + ASIC_IO_OFFSET + PCNET32_DWIO_RDP, ioaddr + ASIC_IO_ADDRESS_REGISTER);      
     outl(temp, ioaddr + ASIC_IO_DATA_REGISTER);
 	
-	/* Check BDP19 = EECAS = EEPROM Control and Status for bit 0x0002 = EESK set,
-	   that indicates an EEPROM has been detected */
-	eepromPresent = pcnet32_dwio_read_bcr(ioaddr, 19) & 0x0002;		    
-    if (eepromPresent)
+	/* Check BDP19 = EECAS = EEPROM Control and Status for bit 0x8000 = PVALID,
+	   that indicates an EEPROM has been read and found valid. */
+	eepromInitDone = pcnet32_dwio_read_bcr(ioaddr, 19) & 0x8000;		    
+    if (!eepromInitDone)
     {
 		int eepromValid;
 		
@@ -455,8 +455,6 @@ sanremo_init_asic(unsigned long ioaddr)
 		if (!eepromValid)
 			return EIO;
     }
-	else
-		return EIO;
     
 	/* Read out the VPD data. We don't need it here, outside of AIX,
 	   but who knows if it is required to make the ASIC happy.
