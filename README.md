@@ -11,6 +11,23 @@ and that needs to be passed in order to configure the PCnet chip.
 Since the PCnet is a PCI busmastering chipset, the ASIC is needed in order to transform
 bus accesses through the card's MCA interface to the PCnet. It acts as a MCA-to-PCI bridge.
 
+## Driver compilation
+
+If you are running a vintage 2.2.17 Linux kernel on your favorite Micro Channel machine,
+you can copy the sanremo.c to /usr/src/kernel-src/drivers/net, copy the sanremo.patch to
+/usr/src/kernel-src, navigate there and
+
+`patch -p0 < sanremo.patch`
+
+Then 
+
+`make menuconfig`
+
+and select the new driver from the network section.
+MCA bus support must be enabled.
+
+Then rebuild and install your custom kernel like you always do.
+
 ## The card's ressources
 
 Through Reference Disk configuration and the ADF, you can choose from the following ressources:
@@ -148,23 +165,6 @@ It may not prove important in PS/2 systems, but accessing that storage space wor
 2) Read the stored byte from the VPD data register at iobase + 0x25.
 3) You could try writing to it, if you dare.
 4) The VPD state/valid register at iobase + 0x26 probably holds a "valid" flag for the checksum.
-
-## Driver compilation
-
-If you are running a vintage 2.2.17 Linux kernel on your favorite Micro Channel machine,
-you can copy the sanremo.c to /usr/src/<kernel-src>/drivers/net, copy the sanremo.patch to
-/usr/src/<kernel-src>, navigate there and
-
-`patch -p0 < sanremo.patch`
-
-Then 
-
-`make menuconfig`
-
-and select the new driver from the network section.
-MCA bus support must be enabled.
-
-Then rebuild and install your custom kernel like you always do.
 
 ## Performance measurement
 
