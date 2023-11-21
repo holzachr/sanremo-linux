@@ -28,9 +28,9 @@ MCA bus support must be enabled.
 
 Then rebuild and install your custom kernel like you always do.
 
-## The card's ressources
+## The card's resources
 
-Through Reference Disk configuration and the ADF, you can choose from the following ressources:
+Through Reference Disk configuration and the ADF, you can choose from the following resources:
 
 I/O 0x1C00..1FFF / 0x2000..23FF / 0x2400..27FF / 0x2800..2BFF
 
@@ -149,7 +149,7 @@ Usually, the PCnet is a supreme busmaster on it's PCI bus.
 The ASIC gracefully picks up busmastering requests from the PCnet, and translates them into 
 Micro Channel DMA requests using the PREEMPT#, ARB/GNT# lines, along with DMA slave arbitration.
 All DMA handling is invisible to the user or driver.
-Reserving a DMA arb level in the Reference Disk configuration is just for allocating the ressource
+Reserving a DMA arb level in the Reference Disk configuration is just for allocating the resource
 for the ASIC, and avoiding conflicts with other installed cards.
    
 ## Accessing the VPD area
@@ -180,6 +180,6 @@ This may change with future revisions of the driver.
 
 ## Credits
 
-Thanks to Ryan Alswede for having the vision of reverse enginnering the card for so long, 
+Thanks to Ryan Alswede for having the vision of reverse enginering the card for so long, 
 poking me at it over and over again, creating the ADF, asking all the right questions and
 all the day long rubber ducking.
