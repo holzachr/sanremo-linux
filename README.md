@@ -67,9 +67,8 @@ iobase + 0x20  2    WO       Init          0x03FF          Written to on Init on
 iobase + 0x22  1    WO       Init          0x7F            Written to on Init only
 iobase + 0x23  1    -        -             -               <unused>
 iobase + 0x24  1    WO       VPD           0x00..0xFF      VPD index register
-iobase + 0x25  1    RO       VPD           Var             VPD data register
-iobase + 0x26  1    RO       VPD           0x01            VPD state/valid Register?
-iobase + 0x27  1    -	     -             -               <unused>
+iobase + 0x25  1    RO       VPD           0x01            VPD state/valid Register?
+iobase + 0x26  2    RO       VPD           Var             VPD data register
 iobase + 0x28  4    WO       Init          0x00000000      Written to on Init only
 iobase + 0x2C  4    -	     -             -               <unused>
 ```
@@ -162,9 +161,10 @@ This data is stored inside a 256 byte EEPROM type 24C02 next to the ASIC.
 It may not prove important in PS/2 systems, but accessing that storage space works like this:
 
 1) Write the byte index (0..255) to the VPD index register at iobase + 0x24
-2) Read the stored byte from the VPD data register at iobase + 0x25.
+2) Read the stored one or two bytes at a time from the VPD data register at iobase + 0x26.
 3) You could try writing to it, if you dare.
-4) The VPD state/valid register at iobase + 0x26 probably holds a "valid" flag for the checksum.
+4) The VPD state/valid register at iobase + 0x25 probably holds a "valid" flag for the checksum
+   or an error/success flag for the EEPROM read operation.
 
 ## Performance measurement
 
