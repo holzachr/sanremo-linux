@@ -18,7 +18,7 @@
  *     This driver is for the IBM 9-K ethernet card only.
  */
 
-static const char *version = "sanremo.c:v1.02 02.01.2024 christian@holzapfel.biz\n";
+static const char *version = "sanremo.c:v1.03 26.01.2024 christian@holzapfel.biz\n";
 
 #include <linux/config.h>
 #include <linux/module.h>
@@ -108,6 +108,7 @@ static int full_duplex[MAX_UNITS] = {0, };
  * v1.00:  Initial version
  * v1.01:  Strange access in sanremo_init_asic() clarified
  * v1.02:  VPD access updated and commented out
+ * v1.03:  ASIC initialization sequence updated
  */
 
 
@@ -404,14 +405,14 @@ sanremo_init_asic(unsigned long ioaddr)
        and is required to start it up. 
        IBM only knows what they mean. */
     outb(0x00,       ioaddr + 0x1D);
-    outb(0x4F,       ioaddr + 0x1E);
+    outb(0x0F,       ioaddr + 0x1E);
     outb(0x04,       ioaddr + 0x1F);                                    
     outl(0x00000000, ioaddr + 0x28);
     outw(0x0006,     ioaddr + 0x00);
     outl(0x00000000, ioaddr + 0x10);
     outl(0x00000000, ioaddr + 0x14);
     outw(0x0FFF,     ioaddr + 0x1A);
-    outb(0x7F,       ioaddr + 0x22);
+    outb(0x3F,       ioaddr + 0x22);
     outw(0x03FF,     ioaddr + 0x20);
                          
     /* Set up the PCnet's PCI Configuration Space through the ASIC */

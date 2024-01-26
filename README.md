@@ -61,10 +61,10 @@ iobase + 0x18  2    RW       ISR           0x8008          ASIC interrupt flags
 iobase + 0x1A  2    WO       Init/ISR      0x0FFF          Written to on Init (0x0FFF) and every ISR exit
 iobase + 0x1C  1    WO       Interrupt                     Daughter card IRQ enable register
 iobase + 0x1D  1    WO       Init          0x00            Written to on Init only
-iobase + 0x1E  1    WO       Init          0x4F            Written to on Init only
+iobase + 0x1E  1    WO       Init          0x0F            Written to on Init only
 iobase + 0x1F  1    WO       Init          0x04            Written to on Init only
 iobase + 0x20  2    WO       Init          0x03FF          Written to on Init only
-iobase + 0x22  1    WO       Init          0x7F            Written to on Init only
+iobase + 0x22  1    WO       Init          0x3F            Written to on Init only
 iobase + 0x23  1    -        -             -               <unused>
 iobase + 0x24  1    WO       VPD           0x00..0xFF      VPD index register
 iobase + 0x25  1    RO       VPD           0x01            VPD state/valid Register?
@@ -82,14 +82,14 @@ set the card in operation:
 
 ```
 outb(0x00,       ioaddr + 0x1D);
-outb(0x4F,       ioaddr + 0x1E);
+outb(0x0F,       ioaddr + 0x1E);
 outb(0x04,       ioaddr + 0x1F);                                    
 outl(0x00000000, ioaddr + 0x28);
 outw(0x0006,     ioaddr + 0x00);
 outl(0x00000000, ioaddr + 0x10);
 outl(0x00000000, ioaddr + 0x14);
 outw(0x0FFF,     ioaddr + 0x1A);
-outb(0x7F,       ioaddr + 0x22);
+outb(0x3F,       ioaddr + 0x22);
 outw(0x03FF,     ioaddr + 0x20);
 ```
 	
@@ -162,7 +162,7 @@ It may not prove important in PS/2 systems, but accessing that storage space wor
 
 1) Write the byte index (0..255) to the VPD index register at iobase + 0x24
 2) Read the stored one or two bytes at a time from the VPD data register at iobase + 0x26.
-3) You could try writing to it, if you dare.
+3) Writing to that VPD data register does not work.
 4) The VPD state/valid register at iobase + 0x25 probably holds a "valid" flag for the checksum
    or an error/success flag for the EEPROM read operation.
 
@@ -170,12 +170,16 @@ It may not prove important in PS/2 systems, but accessing that storage space wor
 
 I used netio v1.11 to benchmark the adapter against a random Core2Duo system running Ubuntu 22.04.
 Adapter in full-duplex, 100 mbit mode.
-Measurements were taken on an IBM PC 750 PCI/MCA machine with Debian "Potato" 2.2 and various CPUs.
 
+Measurements were taken on an IBM PC 750 PCI/MCA machine with Debian "Potato" 2.2 and various CPUs.
 With the stock Pentium 133 CPU, the card achieved about 3.200 kb/sec.
 With an AMD K6-III 400 CPU, the card achieved over 7.500 kb/sec.
+With a newer 2.4 kernel, the AMD CPU achieved around 9.300 kb/sec.
 
-The driver still seems to hit CPU saturation, but the results are still impressive for an MCA system.
+An IBM 8595 with Type 4 Y-Complex, a 66 MHz crystal and Linux 2.2 does around 5.000 kb/sec.
+With a Pentium Overdrive at 200 MHz you can expect around 8.600 kb/sec.
+
+The driver hits CPU saturation, but the results are still impressive for an MCA system.
 This may change with future revisions of the driver.	
 
 ## Credits
