@@ -1,8 +1,9 @@
---- Documentation/Configure.help	Sat Jun 24 13:52:00 2000
-+++ Documentation/Configure.help	Wed Nov  8 08:25:45 2023
-@@ -6523,6 +6523,20 @@ CONFIG_SKMC
-   both cards is done automatically.  Note that using multiple boards
-   of different type hasn't been tested with this driver.
+diff -ruN kernel-source-2.4.18-vanilla/Documentation/Configure.help kernel-source-2.4.18-minimal/Documentation/Configure.help
+--- kernel-source-2.4.18-vanilla/Documentation/Configure.help	Fri Apr  9 13:21:19 2004
++++ kernel-source-2.4.18-minimal/Documentation/Configure.help	Mon Feb 19 15:55:16 2024
+@@ -10913,6 +10913,20 @@
+   module, say M here and read <file:Documentation/modules.txt> as well
+   as <file:Documentation/networking/net-modules.txt>.
  
 +IBM MCA 10/100 Ethernet (9-K)
 +CONFIG_SANREMO
@@ -18,53 +19,49 @@
 +  code name "San Remo". Note that using multiple boards
 +  of this type hasn't been tested with this driver.
 +
- EISA, VLB, PCI and on board controllers
- CONFIG_NET_EISA
-   This is another class of network cards which attach directly to the
---- drivers/net/Config.in	Sat Jun 24 10:25:36 2000
-+++ drivers/net/Config.in	Wed Nov  8 08:22:05 2023
-@@ -121,6 +121,7 @@ if [ "$CONFIG_NET_ETHERNET" = "y" ]; the
-   if [ "$CONFIG_MCA" = "y" ]; then
-     tristate 'NE/2 (ne2000 MCA version) support' CONFIG_NE2_MCA
-     tristate 'SKnet MCA support' CONFIG_SKMC
-+    tristate 'IBM MCA 10/100 Mbps Ethernet (9-K)' CONFIG_SANREMO
-   fi
-   bool 'EISA, VLB, PCI and on board controllers' CONFIG_NET_EISA
-   if [ "$CONFIG_NET_EISA" = "y" ]; then
---- drivers/net/Makefile	Sat Jun 24 10:25:36 2000
-+++ drivers/net/Makefile	Wed Nov  8 09:38:02 2023
-@@ -410,6 +410,14 @@ else
-   endif
- endif
- 
-+ifeq ($(CONFIG_SANREMO),y)
-+L_OBJS += sanremo.o
-+else
-+  ifeq ($(CONFIG_SANREMO),m)
-+  M_OBJS += sanremo.o
-+  endif
-+endif
-+
- ifeq ($(CONFIG_DEFXX),y)
- L_OBJS += defxx.o
- endif
---- drivers/net/Space.c	Sat Jun 24 10:25:36 2000
-+++ drivers/net/Space.c	Wed Nov  8 09:34:06 2023
-@@ -58,6 +58,7 @@ extern int eepro100_probe(struct device 
- extern int el3_probe(struct device *);
- extern int at1500_probe(struct device *);
- extern int pcnet32_probe(struct device *);
+ IBM LAN Adapter/A support
+ CONFIG_IBMLANA
+   This is a Micro Channel Ethernet adapter.  You need to set
+diff -ruN kernel-source-2.4.18-vanilla/drivers/net/Config.in kernel-source-2.4.18-minimal/drivers/net/Config.in
+--- kernel-source-2.4.18-vanilla/drivers/net/Config.in	Mon Feb 25 20:37:59 2002
++++ kernel-source-2.4.18-minimal/drivers/net/Config.in	Mon Feb 19 15:57:33 2024
+@@ -145,6 +145,7 @@
+       tristate '  SKnet MCA support' CONFIG_SKMC
+       tristate '  NE/2 (ne2000 MCA version) support' CONFIG_NE2_MCA
+       tristate '  IBM LAN Adapter/A support' CONFIG_IBMLANA
++      tristate '  IBM MCA 10/100 Mbps Ethernet (9-K)' CONFIG_SANREMO
+    fi
+    if [ "$CONFIG_ISA" = "y" -o "$CONFIG_EISA" = "y" -o "$CONFIG_PCI" = "y" ]; then
+      bool '  EISA, VLB, PCI and on board controllers' CONFIG_NET_PCI
+diff -ruN kernel-source-2.4.18-vanilla/drivers/net/Makefile kernel-source-2.4.18-minimal/drivers/net/Makefile
+--- kernel-source-2.4.18-vanilla/drivers/net/Makefile	Mon Feb 25 20:37:59 2002
++++ kernel-source-2.4.18-minimal/drivers/net/Makefile	Mon Feb 19 15:58:05 2024
+@@ -158,6 +158,7 @@
+ obj-$(CONFIG_EL16) += 3c507.o
+ obj-$(CONFIG_ELMC) += 3c523.o
+ obj-$(CONFIG_SKMC) += sk_mca.o
++obj-$(CONFIG_SANREMO) += sanremo.o
+ obj-$(CONFIG_IBMLANA) += ibmlana.o
+ obj-$(CONFIG_ELMC_II) += 3c527.o
+ obj-$(CONFIG_EL3) += 3c509.o
+diff -ruN kernel-source-2.4.18-vanilla/drivers/net/Space.c kernel-source-2.4.18-minimal/drivers/net/Space.c
+--- kernel-source-2.4.18-vanilla/drivers/net/Space.c	Fri Sep 14 00:21:32 2001
++++ kernel-source-2.4.18-minimal/drivers/net/Space.c	Mon Feb 19 15:58:30 2024
+@@ -70,6 +70,7 @@
+ extern int el16_probe(struct net_device *);
+ extern int elmc_probe(struct net_device *);
+ extern int skmca_probe(struct net_device *);
 +extern int sanremo_probe(struct device *);
- extern int at1700_probe(struct device *);
- extern int fmv18x_probe(struct device *);
- extern int eth16i_probe(struct device *);
-@@ -309,6 +310,9 @@ struct devprobe mca_probes[] __initdata 
+ extern int elplus_probe(struct net_device *);
+ extern int ac3200_probe(struct net_device *);
+ extern int es_probe(struct net_device *);
+@@ -204,6 +205,9 @@
  #endif
  #ifdef CONFIG_SKMC              /* SKnet Microchannel */
          {skmca_probe, 0},
 +#endif
 +#ifdef CONFIG_SANREMO
-+	{sanremo_probe, 0},
++       {sanremo_probe, 0},
  #endif
  	{NULL, 0},
  };
